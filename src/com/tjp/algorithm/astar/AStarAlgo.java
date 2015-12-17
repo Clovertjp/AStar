@@ -32,12 +32,21 @@ public class AStarAlgo {
     //cloae 表
     List<AStarDataBean> closeArray;
 
-    public AStarAlgo(int ylenth,int xlenth)
+    public AStarAlgo(int ylenth,int xlenth) throws Exception
     {
+    	if(xlenth<=0 || ylenth<=0)
+    		throw new Exception("起始点坐标错误");
     	xLenth=xlenth;yLenth=ylenth;
     	starDataBeans=new AStarDataBean[yLenth][xLenth];
+    	openQueue=new PriorityQueue<>((int)Math.sqrt(xlenth*ylenth), new AStarComparator());
     }
     
+    //
+    
+    /**
+     * 初始化数据，将地图数据转换为可以用的Bean
+     * @param data 
+     */
     public void init(byte [][] data)
     {
     	for(int i=0;i<yLenth;i++)
@@ -50,7 +59,16 @@ public class AStarAlgo {
     	}
     }
     
+    //
     
+    /**
+     * 设置起始点和目的点
+     * @param beginX 起始X
+     * @param beginY 起始Y
+     * @param endX 目的X
+     * @param endY 目的Y
+     * @throws Exception
+     */
     public void setBeginEnd(int beginX,int beginY,int endX,int endY) throws Exception
     {
     	if((beginX<0 || beginY<0) || (beginX>=xLenth || beginY>=yLenth) )
@@ -62,6 +80,13 @@ public class AStarAlgo {
     	this.endX=endX;this.endY=endY;
     }
     
+    //
+    
+    /**
+     * 设置可走类型
+     * @param moveType 暂定为： 0:可以通过;  1:可跳过; 2: 可飞过; 3:怎么都过不去
+     * @throws Exception
+     */
     public void setMoveType(byte moveType) throws Exception
     {
     	if(moveType<0)
@@ -69,7 +94,13 @@ public class AStarAlgo {
     	this.moveType=moveType;
     }
     
+    //
     
+    /**
+     * A*寻路算法
+     * @return true 有路径 false 无路径
+     * @throws Exception
+     */
     public boolean searchWay() throws Exception
     {
     	if(beginX<0 || brginY<0)

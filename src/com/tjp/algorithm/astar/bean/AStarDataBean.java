@@ -86,5 +86,14 @@ public class AStarDataBean
 	}
     
     
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return String.format("[ xPos:%s , yPos:%s , data:%s , gValue:%s , hValue:%s , fValue:%s , partents:[ xPos:%s , yPos:%s ] ]",
+				getX(),getY(),getData(),getgValue(),gethValue(),getfValue(),getParent()==null ? "null":getParent().getX(),getParent()==null ? "null":getParent().getY());
+	}
     
 }
