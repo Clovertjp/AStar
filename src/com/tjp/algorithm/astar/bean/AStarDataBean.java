@@ -21,9 +21,9 @@ public class AStarDataBean
     //Y坐标
     private  int y;
     
-    private float gValue;//预估消耗值
-    private float hValue;//到目的地预估消耗值
-    private float fValue;//总消耗值
+    private int gValue;//预估消耗值
+    private int hValue;//到目的地预估消耗值
+    private int fValue;//总消耗值
     
     private AStarDataBean parent;//父节点
     
@@ -53,23 +53,23 @@ public class AStarDataBean
         this.y = y;
     }
 
-	public float getgValue() {
+	public int getgValue() {
 		return gValue;
 	}
 
-	public void setgValue(float gValue) {
+	public void setgValue(int gValue) {
 		this.gValue = gValue;
 	}
 
-	public float gethValue() {
+	public int gethValue() {
 		return hValue;
 	}
 
-	public void sethValue(float hValue) {
+	public void sethValue(int hValue) {
 		this.hValue = hValue;
 	}
 
-	public float getfValue() {
+	public int getfValue() {
 		return fValue;
 	}
 
