@@ -10,6 +10,7 @@ import com.tjp.algorithm.astar.bean.calculate.EuclideanMetricCalculate;
 import com.tjp.algorithm.astar.bean.calculate.ManhattanDistanceCalculate;
 import com.tjp.algorithm.astar.bean.driection.Direction;
 import com.tjp.algorithm.astar.bean.driection.EightDirectional;
+import com.tjp.algorithm.astar.bean.driection.FourDirectional;
 import com.tjp.algorithm.astar.bean.inter.IAlgorithmCalculate;
 import com.tjp.algorithm.astar.bean.inter.IAnyDirectional;
 import com.tjp.algorithm.astar.comparator.AStarComparator;
@@ -56,7 +57,7 @@ public class AStarAlgo {
     		throw new Exception("起始点坐标错误");
     	xLenth=xlenth;yLenth=ylenth;
     	starDataBeans=new AStarDataBean[yLenth][xLenth];
-    	openQueue=new PriorityQueue<>((int)Math.sqrt(xlenth*ylenth), new AStarComparator());
+    	openQueue=new PriorityQueue<AStarDataBean>((int)Math.sqrt(xlenth*ylenth), new AStarComparator());
     	closeArray=new ArrayList<AStarDataBean>();
     	wayStack=new Stack<AStarDataBean>();
     }
@@ -177,11 +178,12 @@ public class AStarAlgo {
     		throw new Exception("起始点坐标错误");
     	if(endX<0 || endY<0)
     		throw new Exception("目标点坐标错误");
+
     	openQueue.add(starDataBeans[beginY][beginX]);
     	
     	if(direction==null)
     	{
-    		direction=new EightDirectional(xLenth, yLenth);
+    		direction=new EightDirectional(xLenth, yLenth).createDirection();
     	}
     	
     	if(calculate==null)
@@ -199,7 +201,6 @@ public class AStarAlgo {
     			setWay();
     			return true;
     		}
-    		
     		for(int i=0;i<direction.directionList.size();i++)
     		{
     			Direction _direction=direction.directionList.get(i);
@@ -209,6 +210,9 @@ public class AStarAlgo {
     				int y=dataBean.getY()+_direction.getyOffset();
     				
     				if(starDataBeans[y][x].getData()>moveType)//判断是否为不可通过点
+    					continue;
+    				
+    				if(closeArray.contains(starDataBeans[y][x]))
     					continue;
     				
     				int oldFValue=Integer.MAX_VALUE;
@@ -234,7 +238,7 @@ public class AStarAlgo {
     					starDataBeans[y][x].sethValue(hValue);
     					starDataBeans[y][x].setParent(dataBean);
     				}
-    				
+    				//System.out.println(x+ "   "+y);
     				openQueue.add(starDataBeans[y][x]);	
     			}
     		}
@@ -252,7 +256,7 @@ public class AStarAlgo {
     	AStarDataBean dataBean=starDataBeans[endY][endX];
     	while(dataBean.getParent()!=null)
     	{
-    		wayStack.add(dataBean);
+    		wayStack.push(dataBean);
     		dataBean=dataBean.getParent();
     	}
     	wayStack.add(dataBean);
@@ -260,13 +264,43 @@ public class AStarAlgo {
     
     public Stack<AStarDataBean> getWay()
     {
-    	return wayStack;
+    	return (Stack<AStarDataBean>) wayStack.clone();
     }
     
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
     	
+    	byte[][] data={ {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0}// y 15 x 30
+
+    	};
+    	
+    	AStarAlgo ago=new AStarAlgo(15, 30);
+    	ago.setBeginEnd(0, 0, 29, 14).setDirectional(new FourDirectional(30, 15).createDirection()).setMoveType((byte) 0)
+    	.setAlgorithmCalculate(AlgorithmCalculateEnum.MANHATTANDISTANCE, null).init(data);
+    	System.out.println(ago.searchWay());
+    	
+    	Stack<AStarDataBean> stac=ago.getWay();
+    	
+    	while(!stac.empty())
+    	{
+    		System.out.println(stac.pop());
+    	}
+
     	
 
 	}

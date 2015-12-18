@@ -52,6 +52,7 @@ public class EightDirectional extends FourDirectional {
 		directionList.add(rightUpDriection);
 		directionList.add(rightDownDriection);
 		
+		
 		return this;
 	}
 	
