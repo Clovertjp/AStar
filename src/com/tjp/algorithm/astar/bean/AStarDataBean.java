@@ -73,8 +73,8 @@ public class AStarDataBean
 		return fValue;
 	}
 
-	public void setfValue() {
-		this.fValue = getgValue()+gethValue();
+	public void setfValue(int fValue) {
+		this.fValue = fValue;
 	}
 
 	public AStarDataBean getParent() {
