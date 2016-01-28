@@ -3,6 +3,7 @@ package com.tjp.algorithm.astar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Random;
 import java.util.Stack;
 
 import com.tjp.algorithm.astar.bean.AStarDataBean;
@@ -23,7 +24,7 @@ public class AStarAlgo {
 
     private int xLenth;//横坐标长度
     private int yLenth;//纵坐标长度
-    private AStarDataBean starDataBeans[][];//数据
+    private static AStarDataBean  starDataBeans[][];//数据
     
     //起始坐标x,y
     private int beginX=-1;
@@ -56,7 +57,6 @@ public class AStarAlgo {
     	if(xlenth<=0 || ylenth<=0)
     		throw new Exception("起始点坐标错误");
     	xLenth=xlenth;yLenth=ylenth;
-    	starDataBeans=new AStarDataBean[yLenth][xLenth];
     	openQueue=new PriorityQueue<AStarDataBean>((int)Math.sqrt(xlenth*ylenth), new AStarComparator());
     	closeArray=new ArrayList<AStarDataBean>();
     	wayStack=new Stack<AStarDataBean>();
@@ -68,21 +68,26 @@ public class AStarAlgo {
      * 初始化数据，将地图数据转换为可以用的Bean
      * @param data 
      */
-    public AStarAlgo init(byte [][] data)
+    public static void init(byte [][] data,int ylenth,int xlenth)
     {
-    	for(int i=0;i<yLenth;i++)
+    	
+    	starDataBeans=new AStarDataBean[ylenth][xlenth];
+    	for(int i=0;i<ylenth;i++)
     	{
-    		for(int j=0;j<xLenth;j++)
+    		for(int j=0;j<xlenth;j++)
     		{
+    			//System.out.println(i+"   "+j);
     			AStarDataBean starDataBean=new AStarDataBean(data[i][j],j,i);
     			starDataBeans[i][j]=starDataBean;
     		}
     	}
     	
-    	return this;
     }
     
-    //
+    public IAnyDirectional getIAnyDirectional()
+    {
+    	return direction;
+    }
     
     /**
      * 设置起始点和目的点
@@ -201,9 +206,15 @@ public class AStarAlgo {
     			setWay();
     			return true;
     		}
-    		for(int i=0;i<direction.directionList.size();i++)
+    		for(int i=0;i<direction.getDirectionList().size();i++)
     		{
-    			Direction _direction=direction.directionList.get(i);
+    			Direction _direction=direction.getDirectionList().get(i);
+    			
+    			if(_direction==null)
+    			{
+    				System.out.println("_direction 为空");
+    			}
+    			
     			if(_direction.judePoint(dataBean.getX(), dataBean.getY()))
     			{
     				int x=dataBean.getX()+_direction.getxOffset();
@@ -274,33 +285,79 @@ public class AStarAlgo {
     	byte[][] data={ {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
     					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
     					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0},
     					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,1,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
     					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0},
+    					{0,0,0,0,0,1,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,3,0,0,0,0,0,0},
     					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
-    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
-    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
-    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
-    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
-    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
-    					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    					{0,0,0,0,0,1,0,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0},
+    					{0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
     					{0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
     					{0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0}// y 15 x 30
 
     	};
     	
-    	AStarAlgo ago=new AStarAlgo(15, 30);
-    	ago.setBeginEnd(0, 0, 29, 14).setDirectional(new FourDirectional(30, 15).createDirection()).setMoveType((byte) 0)
-    	.setAlgorithmCalculate(AlgorithmCalculateEnum.MANHATTANDISTANCE, null).init(data);
-    	System.out.println(ago.searchWay());
+    	AStarAlgo.init(data, 15, 30);
+    	final Random random = new Random(System.currentTimeMillis());
     	
-    	Stack<AStarDataBean> stac=ago.getWay();
     	
-    	while(!stac.empty())
+    	for(int i=0;i<50;i++)
     	{
-    		System.out.println(stac.pop());
+    		Thread thread=new Thread(new Runnable() 
+    		{
+    			
+    			@Override
+    			public void run() 
+    			{
+    				// TODO Auto-generated method stub
+    				AStarAlgo ago=null;
+    				try 
+    				{
+    					int endx=Math.abs(random.nextInt())%30;
+    					int endy=Math.abs(random.nextInt())%15;
+    					ago = new AStarAlgo(15, 30);
+    					ago.setBeginEnd(0, 0, endx, endy).setDirectional(new FourDirectional(30, 15).createDirection()).setMoveType((byte) 0)
+    					.setAlgorithmCalculate(AlgorithmCalculateEnum.MANHATTANDISTANCE, null);
+    					
+    					System.out.println(Thread.currentThread().getId()+"  "+ago.searchWay());
+    			    	
+    			    	Stack<AStarDataBean> stac=ago.getWay();
+    			    	
+//    			    	while(!stac.empty())
+//    			    	{
+//    			    		System.out.println(stac.pop());
+//    			    	}
+    					
+    				} catch (Exception e) {
+    					// TODO Auto-generated catch block
+    					e.printStackTrace();
+    				}
+    		    	
+    		    	
+    			}
+    		});
+    		thread.start();
     	}
-
+    	
+    	
+//    	int endx=Math.abs(random.nextInt())%30;
+//		int endy=Math.abs(random.nextInt())%15;
+//		AStarAlgo ago = new AStarAlgo(15, 30);
+//		ago.setBeginEnd(0, 0, endx, endy).setDirectional(new FourDirectional(30, 15).createDirection()).setMoveType((byte) 0)
+//		.setAlgorithmCalculate(AlgorithmCalculateEnum.MANHATTANDISTANCE, null);
+//		
+//		AStarAlgo ago2 = new AStarAlgo(15, 30);
+//		ago2.setBeginEnd(0, 0, endx, endy).setDirectional(new FourDirectional(30, 15).createDirection()).setMoveType((byte) 0)
+//		.setAlgorithmCalculate(AlgorithmCalculateEnum.MANHATTANDISTANCE, null);
+//    	
+//
+//		if(((FourDirectional)ago.getIAnyDirectional()).directionList==((FourDirectional)ago2.getIAnyDirectional()).directionList)
+//		{
+//			System.out.println(true);
+//		}
     	
 
 	}

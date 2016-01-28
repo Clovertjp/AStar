@@ -3,6 +3,10 @@
  */
 package com.tjp.algorithm.astar.bean.driection;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
 import com.tjp.algorithm.astar.bean.inter.IAnyDirectional;
 
 /**
@@ -18,6 +22,7 @@ public class FourDirectional implements IAnyDirectional {
 	protected int yMax;
 	protected int yMin;
 	
+	public List<Direction> directionList=new ArrayList<Direction>();
 	
 	public FourDirectional(int xMax,int yMax)
 	{
@@ -48,6 +53,15 @@ public class FourDirectional implements IAnyDirectional {
 		directionList.add(rightDriection);
 		
 		return this;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.tjp.algorithm.astar.bean.inter.IAnyDirectional#getList()
+	 */
+	@Override
+	public List<Direction> getDirectionList() {
+		// TODO Auto-generated method stub
+		return directionList;
 	}
 
 	

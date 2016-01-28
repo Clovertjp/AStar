@@ -4,7 +4,9 @@
 package com.tjp.algorithm.astar.bean.inter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 
 import com.tjp.algorithm.astar.bean.driection.Direction;
 
@@ -17,7 +19,7 @@ import com.tjp.algorithm.astar.bean.driection.Direction;
 public interface IAnyDirectional {
 	
 	//方向集合
-	public List<Direction> directionList=new ArrayList<Direction>();
+	 //Collections.synchronizedList(new ArrayList<Direction>());//new ArrayList<Direction>();
 	
 
 	/**
@@ -25,5 +27,7 @@ public interface IAnyDirectional {
 	 * @return
 	 */
 	public IAnyDirectional createDirection();
+	
+	public List<Direction> getDirectionList();
 
 }
