@@ -21,7 +21,7 @@ public interface IAnyDirectional {
 	//方向集合
 	 //Collections.synchronizedList(new ArrayList<Direction>());//new ArrayList<Direction>();
 	
-
+ 
 	/**
 	 * 创建方向
 	 * @return
